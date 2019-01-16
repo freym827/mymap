@@ -1,9 +1,11 @@
 {
+  "homepage": "http://freym827.github.io/mymap/",
   "name": "muber2",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "deck.gl": "^6.3.3",
+    "gh-pages": "^2.0.1",
     "mapbox-gl": "^0.52.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
@@ -14,6 +16,8 @@
     "viewport-mercator-project": "^6.1.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

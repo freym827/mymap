@@ -119,6 +119,12 @@ class Map extends Component {
     if(dist>81770) {
       return 400
     }
+    if(dist>30770) {
+      return 300
+    }
+    if(dist>10770) {
+      return 200
+    }
     return 100
   }
 
