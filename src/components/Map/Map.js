@@ -61,9 +61,34 @@ class Map extends Component {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         },
-        markerdest: {
-          latitude: 41.0814,
-          longitude: -81.5190,
+        haveUsersLocation: true
+      })
+    }
+    const error = (err) => {
+      console.log(err)
+    }
+    const options = {
+      enableHighAccuracy: true
+    }
+    navigator.geolocation.getCurrentPosition(success, error, options) 
+  }
+
+  setPosition = () => {
+    console.log("hello")
+    const success = (position) => {
+      this.setState({
+        viewport: {
+          width: vwidth -100,
+          height: vheight,
+          latitude: this.state.viewport.latitude,
+          longitude: this.state.viewport.longitude,
+          zoom: this.state.viewport.zoom,
+          pitch: 0,
+          bearing: 0
+        },
+        marker: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
         },
         haveUsersLocation: true
       })
@@ -136,7 +161,7 @@ class Map extends Component {
   }
 
   resultFunction = (result) => {
-    setInterval(function(){ console.log("Hello") }, 2000);
+    setInterval(this.setPosition, 3000);
     const directions = [[this.state.marker.longitude, this.state.marker.latitude]]
     const plainDirections = []
     fetch('https://api.mapbox.com/directions/v5/mapbox/driving/' + this.state.marker.longitude + ',' + this.state.marker.latitude + ';' +
