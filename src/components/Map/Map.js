@@ -13,7 +13,7 @@ class Map extends Component {
 
   state = {
     viewport: {
-      width: vwidth-100,
+      width: vwidth,
       height: vheight,
       latitude: 41.4993,
       longitude: -81.6994,
@@ -49,7 +49,7 @@ class Map extends Component {
     const success = (position) => {
       this.setState({
         viewport: {
-          width: vwidth-100,
+          width: vwidth,
           height: vheight,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
