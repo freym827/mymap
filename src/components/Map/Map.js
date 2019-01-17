@@ -3,6 +3,7 @@ import MapGL, { Marker, Popup } from 'react-map-gl';
 import Geocoder from 'react-map-gl-geocoder'
 import DeckGL, { GeoJsonLayer } from 'deck.gl';
 import WebMercatorViewport from 'viewport-mercator-project'
+import { Button } from 'reactstrap';
 import "./Map.css";
 
 
@@ -20,6 +21,10 @@ class Map extends Component {
       zoom: 0,
       pitch: 0,
       bearing: 0
+    },
+    markerstart: {
+      latitude: 41.4993,
+      longitude: -81.6994,
     },
     marker: {
       latitude: 41.4993,
@@ -40,7 +45,7 @@ class Map extends Component {
       getLineWidth: 12,
       getLineColor: [255,20,147]
     },
-    directions: []
+    directions: [],
   };
 
   mapRef = React.createRef()
@@ -61,6 +66,11 @@ class Map extends Component {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         },
+        markerstart: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
+
         haveUsersLocation: true
       })
     }
@@ -78,7 +88,7 @@ class Map extends Component {
     const success = (position) => {
       this.setState({
         viewport: {
-          width: vwidth -100,
+          width: vwidth,
           height: vheight,
           latitude: this.state.viewport.latitude,
           longitude: this.state.viewport.longitude,
@@ -161,7 +171,6 @@ class Map extends Component {
   }
 
   resultFunction = (result) => {
-    setInterval(this.setPosition, 3000);
     const directions = [[this.state.marker.longitude, this.state.marker.latitude]]
     const plainDirections = []
     fetch('https://api.mapbox.com/directions/v5/mapbox/driving/' + this.state.marker.longitude + ',' + this.state.marker.latitude + ';' +
@@ -185,7 +194,7 @@ class Map extends Component {
           const viewport = new WebMercatorViewport(this.state.viewport)
           const newViewport = viewport.fitBounds([[this.state.marker.longitude, this.state.marker.latitude], [result.result.center[0], result.result.center[1]]], {
             padding: 20,
-            offset: [0, -100]
+            offset: [-150, -150]
           })
           this.setState({
             viewport: {
@@ -214,11 +223,38 @@ class Map extends Component {
             },
             directions: plainDirections
           })
-
+          const interval = setInterval(this.setPosition, 2000)
+          document.getElementById("EndRouteBtn").setAttribute("data-interval", interval)
       })
       }).catch(error => {
           console.log(error)
     })
+  }
+
+  endrouteclick = () => {
+    this.setState({
+      viewport: {
+        width: vwidth,
+        height: vheight,
+        latitude: this.state.marker.latitude,
+        longitude: this.state.marker.longitude,
+        zoom: 14,
+        pitch: 0,
+        bearing: 0,
+        transitionDuration: 1700
+      },
+      haveDestination: false,
+      linelayerstuff: {
+        id: 'GeoJsonLayer', 
+        data: {
+          "type": "LineString",
+          "coordinates": [[0,0], [0,0]]
+        },
+        getLineWidth: 0,
+        getLineColor: [255,20,147]
+      }
+    })
+    clearInterval(document.getElementById("EndRouteBtn").getAttribute("data-interval"))
   }
 
   render() {
@@ -238,8 +274,11 @@ class Map extends Component {
                 new GeoJsonLayer(this.state.linelayerstuff)
               ]}
           />
-            <Marker latitude={this.state.marker.latitude} longitude={this.state.marker.longitude} offsetLeft={-25} offsetTop={-20}>
+            <Marker latitude={this.state.markerstart.latitude} longitude={this.state.markerstart.longitude} offsetLeft={-25} offsetTop={-20}>
               <img className = "truckimg" alt='' src ='https://i.imgur.com/3dgA0sR.png' />
+            </Marker>
+            <Marker latitude={this.state.marker.latitude} longitude={this.state.marker.longitude} offsetLeft={-25} offsetTop={-20}>
+              <img className = "blip" alt='' src ='http://chittagongit.com//images/maps-pin-icon/maps-pin-icon-6.jpg' />
             </Marker>
             {this.state.haveDestination && <Marker latitude={this.state.markerdest.latitude} longitude={this.state.markerdest.longitude} offsetLeft={-25} offsetTop={-10}>
               <img className = "treasureimg" alt='' src ='https://pngimg.com/uploads/treasure_chest/treasure_chest_PNG154.png' />
@@ -252,6 +291,9 @@ class Map extends Component {
               onResult={this.resultFunction}
             />
           </MapGL>
+          <div className="overmap">
+          {this.state.haveDestination && <Button id="EndRouteBtn" onClick={this.endrouteclick} className="endroutebtn" color="danger">End Route</Button>}
+          </div>
       </div>
     );
   }
