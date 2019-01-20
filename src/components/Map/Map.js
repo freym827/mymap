@@ -47,11 +47,12 @@ class Map extends Component {
       getLineColor: [255,20,147]
     },
     directions: [],
-    directionnum: 0,
+    directionnum: 1,
     intervalNum: 0,
     tripdist: 0,
     distances: [],
     coordinates: [],
+    ManeuverCoords: [],
     mileswitch: true
   };
 
@@ -101,8 +102,8 @@ class Map extends Component {
       })
       const lat1 = position.coords.latitude
       const lon1 = position.coords.longitude
-      const lat2 = this.state.coordinates[this.state.directionnum + 1][1]
-      const lon2 = this.state.coordinates[this.state.directionnum + 1][0]
+      const lat2 = this.state.ManeuverCoords[this.state.directionnum - 1][1]
+      const lon2 = this.state.ManeuverCoords[this.state.directionnum - 1][0]
       const radlat1 = Math.PI * lat1/180;
       const radlat2 = Math.PI * lat2/180;
       const theta = lon1-lon2;
@@ -116,7 +117,7 @@ class Map extends Component {
       dist = dist * 60 * 1.1515;
       dist = dist * 1.609344
       if(dist<1.7 && this.state.distances[this.state.directionnum]>2500 && this.state.mileswitch) {
-        const msg = new SpeechSynthesisUtterance("In 1 mile..." + this.state.directions[this.state.directionnum+1])
+        const msg = new SpeechSynthesisUtterance("In 1 mile..." + this.state.directions[this.state.directionnum])
         window.speechSynthesis.speak(msg);
         this.setState({
           mileswitch: false
@@ -210,11 +211,12 @@ class Map extends Component {
 
   resultFunction = (result) => {
     this.setState({
-      directionnum: 0
+      directionnum: 1
     })
-    const directions = [[this.state.markerstart.longitude, this.state.markerstart.latitude]]
+    const coordinates = [[this.state.markerstart.longitude, this.state.markerstart.latitude]]
     const plainDirections = []
     const distances = []
+    const ManeuverCoords = []
     fetch('https://api.mapbox.com/directions/v5/mapbox/driving/' + this.state.markerstart.longitude + ',' + this.state.markerstart.latitude + ';' +
       result.result.center[0] + ',' + result.result.center[1] + '?steps=true&geometries=geojson&access_token=' + process.env.REACT_APP_MAP_API)
       .then(this.handleErrors)
@@ -226,20 +228,15 @@ class Map extends Component {
           }
           const dir = data.routes[0].geometry.coordinates
           const pdir = data.routes[0].legs[0].steps
+          console.log(pdir)
           for(let i=0;i<dir.length;i++) {
-            directions.push(dir[i])
+            coordinates.push(dir[i])
           }
           for(let i=0;i<pdir.length;i++) {
             plainDirections.push(pdir[i].maneuver.instruction)
+            ManeuverCoords.push(pdir[i].maneuver.location)
             distances.push(pdir[i].distance)
           }
-
-          this.setState({
-            tripdist: data.routes[0].distance,
-            distances: distances, 
-            coordinates: directions
-          })
-          console.log(distances)
           
           const viewport = new WebMercatorViewport(this.state.viewport)
           const newViewport = viewport.fitBounds([[this.state.markerstart.longitude, this.state.markerstart.latitude], [result.result.center[0], result.result.center[1]]], {
@@ -266,13 +263,19 @@ class Map extends Component {
               id: 'GeoJsonLayer', 
               data: {
                 "type": "LineString",
-                "coordinates": directions
+                "coordinates": coordinates
               },
               getLineWidth: this.lineWidth(data.routes[0].distance),
               getLineColor: [255,20,147]
             },
-            directions: plainDirections
+            tripdist: data.routes[0].distance,
+            distances: distances, 
+            coordinates: coordinates,
+            directions: plainDirections,
+            ManeuverCoords: ManeuverCoords
           })
+          console.log(this.state.directions)
+          console.log(this.state.ManeuverCoords)
       })
       }).catch(error => {
           console.log(error)
