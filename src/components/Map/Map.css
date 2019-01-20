@@ -1,6 +1,6 @@
 .truckimg {
-    width: 60px;
-    height: 40px;
+    width: 40px;
+    height: 60px;
 }
 
 .treasureimg {
@@ -9,24 +9,67 @@
 }
 
 .blip {
-    width: 30px;
+    width: 40px;
     height: 30px;
 }
 
 .overmap {
     width: 100%;
     position: absolute;
-    bottom: 4%;
+    bottom: 90px;
     text-align: center;
     z-index: 1000;
 }
 
 .endroutebtn {
+  z-index: 1000;
   width: 80%;
   height: 50px;
   font-weight: bolder;
   color: white;
   font-size: 20px;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.confirmbtn {
+    z-index: 1000;
+    width: 80%;
+    height: 50px;
+    font-weight: bolder;
+    color: white;
+    font-size: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.directionp {
+    z-index: 1000;
+    width: 80%;
+    font-weight: bolder;
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    margin: 0 auto;
+    padding: 8px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.mapboxgl-ctrl-top-right {
+    width: 10%;
+}
+.mapboxgl-ctrl-top-left {
+    width: 10%;
+}
+
+@media only screen and (min-width: 768px) {
+    .mapboxgl-ctrl-top-right {
+        width: 50%;
+    }
+    .mapboxgl-ctrl-top-left {
+        width: 50%;
+    }
 }
 
 

@@ -1,5 +1,6 @@
 import React from "react"
 import Map from "./components/Map"
+import Bottombar from "./components/Bottombar"
 
  class App extends React.Component {
   
@@ -7,6 +8,7 @@ import Map from "./components/Map"
     return (
        <div>
          <Map />
+         <Bottombar />
        </div>
      )
    }
