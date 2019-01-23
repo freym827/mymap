@@ -123,7 +123,7 @@ class Map extends Component {
           mileswitch: false
         })
       }
-      if(dist<.03) {
+      if(dist<.01) {
         const msg = new SpeechSynthesisUtterance(this.state.directions[this.state.directionnum+1])
         window.speechSynthesis.speak(msg);
         this.setState({
