@@ -7,7 +7,7 @@ import { Button } from 'reactstrap';
 import "./Map.css";
 
 
-const vheight = window.innerHeight-85
+const vheight = window.innerHeight
 const vwidth = window.innerWidth
 
 class Map extends Component {
