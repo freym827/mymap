@@ -12,3 +12,5 @@ and reading documentation.
 
 This map was developed for use in our final group project, a moving app called Muber. Muber and this map are 
 under continual development. 
+
+A stripped down version of Muber can be seen here https://serene-depths-38454.herokuapp.com/ . Here, you can see this map used to search locations, store routes in a database, pass the routes to a 'driver side' app, and search for and display them there. 
